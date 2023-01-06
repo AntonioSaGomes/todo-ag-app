@@ -1,0 +1,32 @@
+{
+  "name": "hi-jiffy-exercise",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest --environment jsdom --root src/",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "npx prettier --write ."
+  },
+  "dependencies": {
+    "@testing-library/vue": "^6.6.1",
+    "vue": "^3.2.45",
+    "vue-axios": "^3.5.2"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.4",
+    "@testing-library/dom": "^8.19.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "@vue/test-utils": "^2.2.6",
+    "eslint": "^8.22.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "jsdom": "^20.0.3",
+    "prettier": "^2.8.1",
+    "vite": "^4.0.0",
+    "vitest": "^0.25.6"
+  }
+}
