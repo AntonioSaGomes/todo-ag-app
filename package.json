@@ -13,7 +13,8 @@
   "dependencies": {
     "@testing-library/vue": "^6.6.1",
     "vue": "^3.2.45",
-    "vue-axios": "^3.5.2"
+    "vue-axios": "^3.5.2",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",

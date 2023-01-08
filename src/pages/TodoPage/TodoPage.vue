@@ -9,14 +9,8 @@
           <span
             v-for="todoColumn in todoColumns"
             class="clickable bold capitalize"
-            @click="sortTodos(todoColumn)"
           >
             {{ todoColumn }}
-            <img
-              v-if="sortingOption === todoColumn"
-              class="icon"
-              src="../../assets/arrow-up-solid.svg"
-            />
           </span>
         </div>
         <div class="todo-table-body">
@@ -24,42 +18,15 @@
             <span>Loading Todos...</span>
           </template>
           <template v-else>
-            <div
-              class="todo-table-row"
-              data-testid="todo-item"
-              v-for="(todo, index) in todos"
-              :key="todo.id"
+            <draggable
+              v-model="todos"
+              tag="transition-group"
+              :component-data="{ name: 'fade' }"
             >
-              <div class="todo-table-row-content">
-                <div
-                  class="todo-description"
-                  data-testid="todo-description"
-                  :class="[todo.completed ? 'completed' : '']"
-                >
-                  {{ todo.name }}
-                </div>
-                <div
-                  class="todo-date"
-                  :class="[todo.completed ? 'completed' : '']"
-                >
-                  {{ getDate(todo.dueDate) }}
-                </div>
-                <div class="todo-options">
-                  <input
-                    type="checkbox"
-                    data-testid="input-checkbox"
-                    @click="updateTodo(todo, index)"
-                    :checked="todo.completed"
-                  />
-                </div>
-                <img
-                  class="icon"
-                  src="../../assets/trash-solid.svg"
-                  data-testid="remove-todo"
-                  @click="deleteTodo(todo.id)"
-                />
-              </div>
-            </div>
+              <template #item="{ element }">
+                <TodoItem :todo="element" @update-todo="updateTodo" />
+              </template>
+            </draggable>
           </template>
         </div>
       </div>
@@ -74,15 +41,19 @@
       />
       <input v-model="todoDate" type="date" class="todo-date-input" />
     </div>
+    <TrashCan @drop="handleDrop" />
     <ErrorToast v-if="error" :error="error" />
   </div>
 </template>
 <script>
 import todoService from "@/services/todo.service.js";
 import ErrorToast from "@/components/ErrorToast.vue";
+import TrashCan from "../../components/TrashCan.vue";
+import TodoItem from "../../components/TodoItem.vue";
+import draggable from "vuedraggable";
 
 export default {
-  components: { ErrorToast },
+  components: { ErrorToast, TrashCan, TodoItem, draggable },
   data() {
     return {
       todos: [],
@@ -91,8 +62,7 @@ export default {
       todoDate: new Date().toLocaleDateString("en-CA"),
       error: null,
       defaultError: "Something went wrong. Pls try again",
-      sortingOption: "description",
-      todoColumns: ["description", "dueDate", "completed"],
+      todoColumns: ["description", "dueDate", "completed", "priority"],
     };
   },
   watch: {
@@ -139,41 +109,15 @@ export default {
         this.error = this.defaultError;
       }
     },
-    async updateTodo(todo, index) {
-      try {
-        const { completed, id } = todo;
-        const payload = {
-          ...todo,
-          completed: !completed,
-        };
-        const updatedTodo = await todoService.updateTodo(id, payload);
-        this.todos[index] = updatedTodo;
-      } catch (error) {
-        this.error = this.defaultError;
-      }
+    updateTodo(updatedTodo) {
+      const index = this.todos.findIndex((todo) => todo.id === updatedTodo.id);
+      if (index > -1) this.todos[index] = updatedTodo;
     },
-    getDate(date) {
-      const today = new Date().getDate();
-      const dateDay = parseInt(date?.split("-")[2]);
-      return today === dateDay
-        ? "Today"
-        : today + 1 === dateDay
-        ? "Tomorrow"
-        : date;
-    },
-    sortTodos(sortKey) {
-      this.sortingOption = sortKey;
-      this.todos.sort((a, b) => {
-        if (sortKey === "description") {
-          return a[sortKey].localeCompare(b[sortKey]);
-        } else if (sortKey === "completed") {
-          return b[sortKey] - a[sortKey];
-        } else if (sortKey === "dueDate") {
-          const dateA = new Date(a[sortKey]);
-          const dateB = new Date(b[sortKey]);
-          return dateA - dateB;
-        }
-      });
+    handleDrop(event) {
+      console.log("dropped it ");
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text/plain");
+      // Do something with the data that was dropped into the trash can
     },
   },
 };
@@ -209,10 +153,6 @@ export default {
   margin: 10px;
 }
 
-.completed {
-  opacity: 0.4;
-}
-
 input {
   padding: 12px;
   border: 1px solid #ccc;
@@ -240,24 +180,6 @@ input {
   height: 90%;
   max-height: 70%;
   overflow-y: scroll;
-}
-
-.todo-table-row-content {
-  display: grid;
-  text-align: left;
-  grid-auto-flow: column;
-  grid-template-columns: 4fr 3fr 2fr 1fr;
-  cursor: pointer;
-  align-items: center;
-  padding: 10px 0px 10px;
-}
-
-.todo-table-row:hover {
-  background-color: rgba(134, 208, 236, 0.3);
-}
-
-.todo-options {
-  margin-left: 4.5ch;
 }
 
 div input[type="checkbox"] {
