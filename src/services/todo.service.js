@@ -1,11 +1,16 @@
-import axios from "axios";
+import axios from 'redaxios';
 
 //const BASE_URL = "https://todo-ag-api.herokuapp.com/";
 
-const BASE_URL = "http://127.0.0.1:8000/";
+const BASE_URL = "https://todo-ag-api.onrender.com";
 
 const http = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+
 });
 
 const getTodos = (params) => http.get("todos/", { params }).then((res) => res.data);
