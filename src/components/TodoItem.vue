@@ -105,10 +105,10 @@ export default {
   display: grid;
   text-align: left;
   grid-auto-flow: column;
-  grid-template-columns: 4fr 3fr 2fr 1fr;
+  grid-template-columns: 4fr 2fr 1fr 1fr;
   cursor: pointer;
   align-items: center;
-  padding: 10px 0px 10px;
+  padding: 10px;
 }
 
 .todo-table-row:hover {
@@ -116,6 +116,8 @@ export default {
 }
 
 .todo-table-row {
+  background: whitesmoke;
+  outline: 2px solid silver;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 

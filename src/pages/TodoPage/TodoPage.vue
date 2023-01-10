@@ -15,9 +15,11 @@
         </div>
         <div class="todo-table-body">
           <template v-if="loadingTodos">
+            <LoadingSpinner />
             <span>Loading Todos...</span>
           </template>
           <template v-else>
+            <TodoSection name="In Progress" />
             <draggable
               v-model="todos"
               tag="transition-group"
@@ -27,6 +29,7 @@
                 <TodoItem :todo="element" @update-todo="updateTodo" />
               </template>
             </draggable>
+            <TodoSection name="Backlog" />
           </template>
         </div>
       </div>
@@ -58,9 +61,18 @@ import ErrorToast from "@/components/ErrorToast.vue";
 import TrashCan from "../../components/TrashCan.vue";
 import TodoItem from "../../components/TodoItem.vue";
 import draggable from "vuedraggable";
+import LoadingSpinner from "../../components/LoadingSpinner.vue";
+import TodoSection from "../../components/TodoSection.vue";
 
 export default {
-  components: { ErrorToast, TrashCan, TodoItem, draggable },
+  components: {
+    ErrorToast,
+    TrashCan,
+    TodoItem,
+    draggable,
+    LoadingSpinner,
+    TodoSection,
+  },
   data() {
     return {
       todos: [],
@@ -112,8 +124,8 @@ export default {
     async deleteTodo(id) {
       try {
         this.drop = true;
-        await todoService.deleteTodo(id);
         this.todos = this.todos.filter((todo) => todo.id != id);
+        await todoService.deleteTodo(id);
         this.drop = false;
       } catch (error) {
         this.error = this.defaultError;
@@ -181,15 +193,15 @@ input {
   display: grid;
   grid-auto-flow: column;
   text-align: left;
-  grid-template-columns: 4fr 3fr 2fr 1fr;
+  grid-template-columns: 4fr 2fr 1fr 1fr;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-
 .todo-table-body {
   height: 90%;
-  max-height: 70%;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 div input[type="checkbox"] {

@@ -12,7 +12,7 @@ app {
   display: flex;
   justify-content: center;
   font-weight: normal;
-  background-color: rgba(134, 208, 236, 0.2);
+  background-color: lightgrey;
 }
 
 .bold {
