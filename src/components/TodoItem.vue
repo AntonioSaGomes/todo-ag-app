@@ -52,10 +52,11 @@ export default {
   methods: {
     handleDragStart(event) {
       console.log("drag event start");
-      event.dataTransfer.setData("text/plain", event.target.textContent);
+      console.log(this.todo.id);
+      event.dataTransfer.setData("todo", this.todo.id);
     },
     handleDragEnd(event) {
-      console.log("drag event ended");
+      console.log("draggy event ended");
       // Do something when the drag operation is finished
     },
     async updateTodo(todo) {
@@ -112,6 +113,10 @@ export default {
 
 .todo-table-row:hover {
   background-color: rgba(134, 208, 236, 0.3);
+}
+
+.todo-table-row {
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 .todo-options {

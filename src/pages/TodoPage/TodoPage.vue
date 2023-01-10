@@ -41,7 +41,14 @@
       />
       <input v-model="todoDate" type="date" class="todo-date-input" />
     </div>
-    <TrashCan @drop="handleDrop" />
+    <div
+      class="trash-can-drop-zone"
+      @dragover.prevent
+      @dragenter.prevent
+      @drop="handleDrop"
+    >
+      <TrashCan :drop="drop" />
+    </div>
     <ErrorToast v-if="error" :error="error" />
   </div>
 </template>
@@ -63,6 +70,7 @@ export default {
       error: null,
       defaultError: "Something went wrong. Pls try again",
       todoColumns: ["description", "dueDate", "completed", "priority"],
+      drop: false,
     };
   },
   watch: {
@@ -103,8 +111,10 @@ export default {
     },
     async deleteTodo(id) {
       try {
+        this.drop = true;
         await todoService.deleteTodo(id);
-        this.todos = this.todos.filter((todo) => todo.id !== id);
+        this.todos = this.todos.filter((todo) => todo.id != id);
+        this.drop = false;
       } catch (error) {
         this.error = this.defaultError;
       }
@@ -114,9 +124,9 @@ export default {
       if (index > -1) this.todos[index] = updatedTodo;
     },
     handleDrop(event) {
-      console.log("dropped it ");
       event.preventDefault();
-      const data = event.dataTransfer.getData("text/plain");
+      const id = event.dataTransfer.getData("todo");
+      this.deleteTodo(id);
       // Do something with the data that was dropped into the trash can
     },
   },
@@ -134,7 +144,7 @@ export default {
   justify-content: start;
   align-items: center;
   flex-direction: column;
-  height: min(100%, 500px);
+  height: 100%;
   width: min(100%, 800px);
   max-height: 100vh;
   place-items: center;
