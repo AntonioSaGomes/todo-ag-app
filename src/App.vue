@@ -22,7 +22,7 @@ header {
 }
 .todo-person-image {
   position: absolute;
-  bottom: 0px;
+  top: 0px;
   left: 5px;
   width: 15%;
 }
