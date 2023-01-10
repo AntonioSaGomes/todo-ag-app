@@ -105,7 +105,7 @@ export default {
   display: grid;
   text-align: left;
   grid-auto-flow: column;
-  grid-template-columns: 4fr 2fr 1fr 1fr;
+  grid-template-columns: 5fr 2fr 1fr 1fr;
   cursor: pointer;
   align-items: center;
   padding: 10px;

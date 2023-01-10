@@ -193,7 +193,7 @@ input {
   display: grid;
   grid-auto-flow: column;
   text-align: left;
-  grid-template-columns: 4fr 2fr 1fr 1fr;
+  grid-template-columns: 5fr 2fr 1fr 1fr;
   margin-top: 10px;
   margin-bottom: 10px;
 }

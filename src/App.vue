@@ -4,7 +4,7 @@ import TodoPage from "./pages/TodoPage/TodoPage.vue";
 
 <template>
   <div class="todo-page-wrapper">
-    <img class="todo-person-image" src="todo-backy.png" />
+    <img class="todo-person-image" src="/todo-background.png" />
     <TodoPage />
   </div>
 </template>
