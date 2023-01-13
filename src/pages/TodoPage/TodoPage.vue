@@ -18,18 +18,19 @@
             <LoadingSpinner />
             <span>Loading Todos...</span>
           </template>
-          <template v-else>
+          <template v-else-if="!loadingTodos && todos.length">
             <TodoSection name="In Progress" />
-            <draggable
-              v-model="todos"
-              tag="transition-group"
-              :component-data="{ name: 'fade' }"
-            >
+            <draggable v-model="doingTodos" item-key="id">
               <template #item="{ element }">
                 <TodoItem :todo="element" @update-todo="updateTodo" />
               </template>
             </draggable>
             <TodoSection name="Backlog" />
+            <draggable v-model="backlogTodos" item-key="id">
+              <template #item="{ element }">
+                <TodoItem :todo="element" @update-todo="updateTodo" />
+              </template>
+            </draggable>
           </template>
         </div>
       </div>
@@ -83,6 +84,9 @@ export default {
       defaultError: "Something went wrong. Pls try again",
       todoColumns: ["description", "dueDate", "completed", "priority"],
       drop: false,
+      backlogTodos: [],
+      doingTodos: [],
+      dragging: false,
     };
   },
   watch: {
@@ -91,11 +95,22 @@ export default {
         setTimeout(() => (this.error = null), 3000);
       }
     },
+    todos() {
+      this.backlogTodos = this.todos.filter(
+        (todo) => todo.section === "Backlog"
+      );
+      this.doingTodos = this.todos.filter(
+        (todo) => todo.section === "In Progress"
+      );
+    },
   },
   created() {
     this.fetchTodos();
   },
   methods: {
+    move(e) {
+      console.log("move", e);
+    },
     async fetchTodos() {
       try {
         this.todos = await todoService.getTodos();
@@ -113,6 +128,7 @@ export default {
           priority: "high",
           completed: false,
           dueDate: this.todoDate,
+          section: "Backlog",
         };
         const todo = await todoService.addTodo(payload);
         this.todos.push(todo);
@@ -212,5 +228,14 @@ div input[type="checkbox"] {
 
 .icon:hover {
   transform: scale(1.3);
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.not-draggable {
+  cursor: no-drop;
 }
 </style>
