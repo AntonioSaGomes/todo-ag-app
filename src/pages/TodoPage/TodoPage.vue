@@ -20,13 +20,23 @@
           </template>
           <template v-else-if="!loadingTodos && todos.length">
             <TodoSection name="In Progress" />
-            <draggable v-model="doingTodos" item-key="id">
+            <draggable
+              v-model="doingTodos"
+              item-key="id"
+              group="todos"
+              @change="orderDoing"
+            >
               <template #item="{ element }">
                 <TodoItem :todo="element" @update-todo="updateTodo" />
               </template>
             </draggable>
             <TodoSection name="Backlog" />
-            <draggable v-model="backlogTodos" item-key="id">
+            <draggable
+              v-model="backlogTodos"
+              item-key="id"
+              group="todos"
+              @change="orderBack"
+            >
               <template #item="{ element }">
                 <TodoItem :todo="element" @update-todo="updateTodo" />
               </template>
@@ -82,7 +92,7 @@ export default {
       todoDate: new Date().toLocaleDateString("en-CA"),
       error: null,
       defaultError: "Something went wrong. Pls try again",
-      todoColumns: ["description", "dueDate", "completed", "priority"],
+      todoColumns: ["description", "dueDate", "done", "priority"],
       drop: false,
       backlogTodos: [],
       doingTodos: [],
@@ -100,7 +110,7 @@ export default {
         (todo) => todo.section === "Backlog"
       );
       this.doingTodos = this.todos.filter(
-        (todo) => todo.section === "In Progress"
+        (todo) => todo.section === "InProgress"
       );
     },
   },
@@ -137,6 +147,7 @@ export default {
         this.error = this.defaultError;
       }
     },
+
     async deleteTodo(id) {
       try {
         this.drop = true;
@@ -156,6 +167,40 @@ export default {
       const id = event.dataTransfer.getData("todo");
       this.deleteTodo(id);
       // Do something with the data that was dropped into the trash can
+    },
+    async updateTodo(todo, fields, values) {
+      try {
+        const { id } = todo;
+        let payload = { ...todo };
+        fields.forEach((field, index) => {
+          payload[field] = values[index];
+        });
+        const updatedTodo = await todoService.updateTodo(id, payload);
+      } catch (error) {
+        console.log(error);
+        this.error = this.defaultError;
+      }
+    },
+    orderDoing(e) {
+      this.order(e, "InProgress");
+    },
+    orderBack(e) {
+      this.order(e, "Backlog");
+    },
+    order(e, section) {
+      const action = Object.keys(e)[0];
+
+      const { element: todo, newIndex } = e?.[action];
+      switch (action) {
+        case "removed":
+          break;
+        case "moved":
+          this.updateTodo(todo, ["order"], [newIndex]);
+          break;
+        case "added":
+          this.updateTodo(todo, ["order", "section"], [newIndex, section]);
+          break;
+      }
     },
   },
 };

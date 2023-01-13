@@ -51,12 +51,9 @@ export default {
   },
   methods: {
     handleDragStart(event) {
-      console.log("drag event start");
-      console.log(this.todo.id);
       event.dataTransfer.setData("todo", this.todo.id);
     },
     handleDragEnd(event) {
-      console.log("draggy event ended");
       // Do something when the drag operation is finished
     },
     async updateTodo(todo) {
@@ -119,10 +116,6 @@ export default {
   background: whitesmoke;
   outline: 2px solid silver;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
-.todo-options {
-  margin-left: 4.5ch;
 }
 
 .completed {
