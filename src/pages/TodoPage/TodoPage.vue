@@ -224,7 +224,6 @@ export default {
   flex-direction: column;
   height: 100%;
   width: min(100%, 800px);
-  max-height: 100vh;
   place-items: center;
 }
 

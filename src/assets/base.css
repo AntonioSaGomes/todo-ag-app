@@ -60,7 +60,6 @@
 }
 
 body {
-  min-height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
@@ -74,7 +73,7 @@ body {
 }
 
 @media screen and (max-width: 800px) {
-  :root{
+  :root {
     font-size: 12px;
   }
 }
