@@ -10,7 +10,6 @@ priorities.forEach((priority) => {
 
 
 export default function nextPriority(current){
-    console.log('lll', current)
    const priority = priorityList.find(current);
    return priority?.next?.data;
 } 

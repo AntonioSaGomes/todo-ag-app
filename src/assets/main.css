@@ -3,12 +3,12 @@
 :root,
 html,
 body {
-  height: 100vh;
+  height: 100%;
   height: -webkit-fill-available;
 }
 
 #app {
-  height: 100vh;
+  height: 100%;
   height: -webkit-fill-available;
   color-scheme: light;
   display: flex;

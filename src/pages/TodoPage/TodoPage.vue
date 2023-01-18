@@ -27,7 +27,7 @@
               @change="orderDoing"
             >
               <template #item="{ element }">
-                <TodoItem :todo="element" @update-todo="updateTodo" />
+                <TodoItem :todo="element" @update-todo="updatedTodo" />
               </template>
             </draggable>
             <TodoSection name="Backlog" />
@@ -38,7 +38,7 @@
               @change="orderBack"
             >
               <template #item="{ element }">
-                <TodoItem :todo="element" @update-todo="updateTodo" />
+                <TodoItem :todo="element" @updateTodo="updatedTodo" />
               </template>
             </draggable>
           </template>
@@ -158,9 +158,14 @@ export default {
         this.error = this.defaultError;
       }
     },
-    updateTodo(updatedTodo) {
+    updatedTodo(updatedTodo) {
       const index = this.todos.findIndex((todo) => todo.id === updatedTodo.id);
-      if (index > -1) this.todos[index] = updatedTodo;
+      if (index > -1) {
+        const todos = this.todos.slice();
+        this.todos = todos;
+        this.todos[index] = updatedTodo;
+      }
+      console.log(this.todos);
     },
     handleDrop(event) {
       event.preventDefault();
@@ -172,7 +177,7 @@ export default {
       try {
         const { id } = todo;
         let payload = { ...todo };
-        fields.forEach((field, index) => {
+        fields?.forEach((field, index) => {
           payload[field] = values[index];
         });
         const updatedTodo = await todoService.updateTodo(id, payload);
