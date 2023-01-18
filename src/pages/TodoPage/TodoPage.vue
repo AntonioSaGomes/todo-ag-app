@@ -184,6 +184,9 @@ export default {
           payload[field] = values[index];
         });
         const updatedTodo = await todoService.updateTodo(id, payload);
+        const todoIndex = this.todos.findIndex((todo) => todo.id === id);
+        this.todos[todoIndex] = updatedTodo;
+        this.todos = this.todos.slice(0);
       } catch (error) {
         console.log(error);
         this.error = this.defaultError;
