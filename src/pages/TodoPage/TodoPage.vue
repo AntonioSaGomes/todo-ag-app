@@ -18,7 +18,7 @@
             <LoadingSpinner />
             <span>Loading Todos...</span>
           </template>
-          <template v-else-if="!loadingTodos && todos.length">
+          <template v-else-if="!loadingTodos">
             <TodoSection name="In Progress" />
             <draggable
               v-model="doingTodos"
@@ -106,6 +106,7 @@ export default {
       }
     },
     todos() {
+      console.log("todos", this.todos);
       this.backlogTodos = this.todos.filter(
         (todo) => todo.section === "Backlog"
       );
@@ -141,6 +142,8 @@ export default {
           section: "Backlog",
         };
         const todo = await todoService.addTodo(payload);
+        const todos = this.todos.slice(); //not reactive
+        this.todos = todos;
         this.todos.push(todo);
         this.todoDescription = "";
       } catch (error) {
@@ -161,7 +164,7 @@ export default {
     updatedTodo(updatedTodo) {
       const index = this.todos.findIndex((todo) => todo.id === updatedTodo.id);
       if (index > -1) {
-        const todos = this.todos.slice();
+        const todos = this.todos.slice(); //not reactive
         this.todos = todos;
         this.todos[index] = updatedTodo;
       }
